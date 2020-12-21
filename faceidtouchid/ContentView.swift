@@ -31,23 +31,26 @@ struct ContentView_Previews: PreviewProvider {
 struct Home: View {
     @State var userName = ""
     @State var password = ""
+    @State var invisible = false
     // when first time user logged in via email store this for future biometric login...
     @AppStorage("stored_User") var user = "723125@gmail.com"
     @AppStorage("status") var logged = false
     
     var body: some View {
         VStack {
-            Spacer(minLength: 0)
+//            Spacer(minLength: 0)
             Image("lightalien")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 
-                //Dynamic Frame ...
                 
-                .padding(.horizontal, 100)
-                .padding(.vertical)
+                //Dynamic Frame ...
+//                .padding(.horizontal, 100)
+                .padding(.vertical, 0)
+            
+            
             HStack {
-                VStack(alignment: .leading, spacing: 12, content: {
+                VStack(alignment: .leading, spacing: 10, content: {
                     Text("login")
                         .font(.title)
                         .fontWeight(.bold)
@@ -58,15 +61,25 @@ struct Home: View {
                 Spacer(minLength: 0)
             } //hstack
             .padding()
-            .padding(.leading, 35)
+            .padding(.leading, 15)
             HStack {
                 Image(systemName: "envelope")
                     .font(.title2)
                     .foregroundColor(.primary)
-                    .frame(width: 35)
+                    .frame(width: 30)
                 
                 TextField("Email", text: $userName)
                     .autocapitalization(.none)
+                    .onReceive(KeybordManager.shared.$keyboardFrame) { keyboardFrame in
+                                        if let keyboardFrame = keyboardFrame, keyboardFrame != .zero {
+                                            self.invisible = false
+                                        } else {
+                                            self.invisible = true
+                                        }
+                                }
+                    .onTapGesture {
+                        self.hideKeyBoard()
+                    }
             } //hstack
             .padding()
             .background(Color.primary.opacity(userName == "" ? 0 : 0.10))
@@ -77,7 +90,7 @@ struct Home: View {
                 Image(systemName: "lock")
                     .font(.title2)
                     .foregroundColor(.primary)
-                    .frame(width: 35)
+                    .frame(width: 30)
                 
                 SecureField("Password", text: $password)
                     .autocapitalization(.none)
@@ -94,7 +107,7 @@ struct Home: View {
                         .fontWeight(.heavy)
                         .foregroundColor(.primary)
                         .padding(.vertical)
-                        .frame(width: UIScreen.main.bounds.width - 150)
+                        .frame(width: UIScreen.main.bounds.width - 200)
                         .background(Color("green"))
                         .clipShape(Capsule())
                 })
@@ -115,27 +128,39 @@ struct Home: View {
             } //hstack
             .padding(.top)
             
-            //forget button
-            Button(action: {}, label: {
-                Text("Forget password?")
-                    .foregroundColor(Color("green"))
-            })
-            .padding(.top, 8)
+            
+            
+            //////////////// start when  keyboard actif  hiding stuff
+            
             
             //signUp
-            Spacer(minLength: 0)
-            HStack(spacing: 6) {
-                Text("Don't have an account yet ?")
-                    .foregroundColor(Color.primary.opacity(0.6))
-                
+            if self.invisible {
+                //forget button
                 Button(action: {}, label: {
-                    Text("SignUp")
-                        .fontWeight(.heavy)
+                    Text("Forget password?")
                         .foregroundColor(Color("green"))
                 })
+                .padding(.top, 5)
+                Spacer(minLength: 0)
                 
+                HStack(spacing: 6) {
+                    Text("Don't have an account yet ?")
+                        .foregroundColor(Color.primary.opacity(0.6))
+                    
+                    Button(action: {}, label: {
+                        Text("SignUp")
+                            .fontWeight(.heavy)
+                            .foregroundColor(Color("green"))
+                    })
+                    
+                }
+                .padding(.vertical, 2)
+            }else {
+                EmptyView()
             }
-            .padding(.vertical)
+
+            //////////////// end  when  keyboard actif  hiding stuff
+            
             
         }//vstack
         .background(Color("bg").ignoresSafeArea(.all, edges: .all))
@@ -165,3 +190,16 @@ struct Home: View {
     }
 }
 
+
+/// extension for keyboard ...
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
+extension View {
+    func hideKeyBoard(){
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
