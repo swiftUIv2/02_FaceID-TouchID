@@ -1,7 +1,7 @@
 # faceid & touchid
 02: Connect menu authentication Face ID or Touch ID
 
-<img src="/demo.gif" width="390" height="844"/>  <img src="/dark2.png" width="390" height="844"/>
+<img src="https://media.giphy.com/media/o9tEgUBL3B2EBh1UnA/giphy.gif" width="390" height="844"/>  
 
 <img src="/light2.png" width="390" height="844"/>  <img src="/dark2.png" width="390" height="844"/>
 
