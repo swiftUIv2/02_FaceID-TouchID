@@ -1,7 +1,7 @@
 # faceid & touchid
 02: Connect menu authentication Face ID or Touch ID
 
-![](demo.gif =250x250)
+![](demo.gif)
 
 <img src="/light2.png" width="390" height="844"/>  <img src="/dark2.png" width="390" height="844"/>
 
